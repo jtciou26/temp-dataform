@@ -32,7 +32,8 @@ js {
     return 'COALESCE(' + column + ', "") as ' + columnName;
   }
   // Exclude extra day exports 
-  const excludeExtraDays = 'NOT STARTS_WITH(_TABLE_SUFFIX, "intraday") OR NOT STARTS_WITH(_TABLE_SUFFIX, "fresh")';
+  const excludeIntraFreshTables = 'NOT STARTS_WITH(_TABLE_SUFFIX, "intraday") OR NOT STARTS_WITH(_TABLE_SUFFIX, "fresh")';
+  const excludeExtraDays = 'table_id LIKE "events%" AND NOT (table_id LIKE "%intraday%" OR table_id LIKE "%fresh%")';
 }
 
 config { 
@@ -183,15 +184,21 @@ SELECT
     is_active_user,
     _TABLE_SUFFIX as table_suffix
 FROM ${ref('events' + dataform.projectConfig.vars.ga4_export_table_suffix)}
-WHERE ${excludeExtraDays}
-  AND _TABLE_SUFFIX > 
+WHERE _TABLE_SUFFIX BETWEEN 
     FORMAT_DATE("%Y%m%d", DATE_SUB(
       ((
-   SELECT MAX(SAFE.PARSE_DATE('%Y%m%d',_TABLE_SUFFIX))
-  FROM ${ref('events' + dataform.projectConfig.vars.ga4_export_table_suffix)}
+   SELECT SAFE.PARSE_DATE('%Y%m%d',SUBSTR(MAX(table_id), LENGTH('PREFIX') + 2))
+  FROM `${dataform.projectConfig.vars.ga4_export_project + '.' + dataform.projectConfig.vars.ga4_export_dataset + '.__TABLES_SUMMARY__'}`
   -- Exclude extra day exports 
   WHERE ${excludeExtraDays}
 )),
       INTERVAL ${dataform.projectConfig.vars.ga4_incremental_processing_days_back} DAY
+    )) AND 
+   FORMAT_DATE("%Y%m%d",
+      (
+   SELECT SAFE.PARSE_DATE('%Y%m%d',SUBSTR(MAX(table_id), LENGTH('PREFIX') + 2))
+  FROM `${dataform.projectConfig.vars.ga4_export_project + '.' + dataform.projectConfig.vars.ga4_export_dataset + '.__TABLES_SUMMARY__'}`
+  -- Exclude extra day exports 
+  WHERE ${excludeExtraDays}
     ))
 )
