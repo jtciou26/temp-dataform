@@ -1,9 +1,9 @@
 {
   "warehouse": "bigquery",
-  "defaultDatabase": "PROJECT_ID",
+  "defaultDatabase": "toegazer",
   "defaultSchema": "marketing",
   "assertionSchema": "marketing_assertions",
-  "defaultLocation": "US",
+  "defaultLocation": "asia-east2",
   "vars": {
     "ga4_property_id": "PROPERTY_ID",
     "ga4_export_project": "PROJECT_ID",
