@@ -31,6 +31,8 @@ js {
   function notNullString(column, columnName) {
     return 'COALESCE(' + column + ', "") as ' + columnName;
   }
+ // Exclude extra day exports 
+  const excludeExtraDays = 'table_id LIKE "pseudonymous_users%" AND NOT (table_id LIKE "%intraday%" OR table_id LIKE "%fresh%")';
 }
 
 config { 
