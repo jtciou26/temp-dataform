@@ -117,4 +117,21 @@ SELECT
     PARSE_DATE('%Y%m%d', last_updated_date) as last_updated_date,
     _TABLE_SUFFIX as table_suffix
 FROM ${ref('pseudonymous_users' + dataform.projectConfig.vars.ga4_export_table_suffix)}, UNNEST(audiences) as audiences
+WHERE _TABLE_SUFFIX BETWEEN 
+    FORMAT_DATE("%Y%m%d", DATE_SUB(
+      ((
+   SELECT SAFE.PARSE_DATE('%Y%m%d',SUBSTR(MAX(table_id), LENGTH('pseudonymous_users') + 2))
+  FROM `${dataform.projectConfig.vars.ga4_export_project + '.' + dataform.projectConfig.vars.ga4_export_dataset + '.__TABLES_SUMMARY__'}`
+  -- Exclude extra day exports 
+  WHERE ${excludeExtraDays}
+)),
+      INTERVAL ${dataform.projectConfig.vars.ga4_incremental_processing_days_back} DAY
+    )) AND 
+   FORMAT_DATE("%Y%m%d",
+      (
+   SELECT SAFE.PARSE_DATE('%Y%m%d',SUBSTR(MAX(table_id), LENGTH('pseudonymous_users') + 2))
+  FROM `${dataform.projectConfig.vars.ga4_export_project + '.' + dataform.projectConfig.vars.ga4_export_dataset + '.__TABLES_SUMMARY__'}`
+  -- Exclude extra day exports 
+  WHERE ${excludeExtraDays}
+    ))
 )
