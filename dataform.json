@@ -3,7 +3,7 @@
   "defaultDatabase": "toegazer",
   "defaultSchema": "marketing",
   "assertionSchema": "marketing_assertions",
-  "defaultLocation": "asia-east2",
+  "defaultLocation": "asia-east1",
   "vars": {
     "ga4_property_id": "421193188",
     "ga4_export_project": "toegazer",
