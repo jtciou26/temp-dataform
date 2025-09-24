@@ -40,7 +40,7 @@ config {
   schema: functions.baseSchema("ga4"),
   columns: docs.ga4_events,
   description: "View into GA4 exported tables. Not be used outside of the Dataform transformation jobs.",
-  tags: ['ga4']
+  tags: ['ga4_pseudo']
 }
 
 SELECT
