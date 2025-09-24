@@ -24,7 +24,7 @@ config {
     partitionBy: "DATETIME_TRUNC(user_first_touch_timestamp, DAY)",
     clusterBy: ["pseudo_user_id", "stream_id"]
   },
-  tags: ['ga4']
+  tags: ['ga4_pseudo']
   }
 
 SELECT
