@@ -23,7 +23,7 @@ config {
     // TODO: Partionioning and clustering on this table are best estimates
     partitionBy: "DATE_TRUNC(last_updated_date, MONTH)"
   },
-  tags: ['ga4']
+  tags: ['ga4_pseudo']
   }
 
 WITH source AS
